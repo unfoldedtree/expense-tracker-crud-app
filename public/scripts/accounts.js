@@ -2,8 +2,15 @@ const list = document.getElementById('list')
 const form = document.getElementById('form')
 const title = document.getElementById('title')
 const description = document.getElementById('description')
+const dropBtn = document.getElementById('drop-btn')
+const addAccountDiv = document.getElementById('add-account-div')
 
 let accounts = [];
+
+dropBtn.addEventListener('click', () => {
+    addAccountDiv.classList.toggle('hidden')
+    dropBtn.classList.toggle('hidden')
+})
 
 //Add account
 async function addTransaction(e) {
@@ -29,17 +36,32 @@ async function addTransaction(e) {
 }
 
 // Add accounts to DOM list
-function addAccountDOM(account) {
+function addAccountDOM(account, updating = false) {
 
-    const item = document.createElement('div')
-    item.id = account._id
+    let item;
 
-    item.classList.add('account-container')
+    if (updating) {
+        item = document.getElementById(account._id)
+    } else {
+        item = document.createElement('div')
+        item.id = account._id
+        item.classList.add('account-container')
+    }
 
     item.innerHTML = `
-        <div>
-            <h4>${account.title}</h4>
+        <div class="account-header">
+            <form class="account-input edit-hidden">
+                <input class="input-title" value="${account.title}" placeholder="${account.title}" />
+                <input class="input-description" value="${account.description}" placeholder="${account.description}" />
+            </form>
+            <div class="title-row">
+                <h4 class="account-title">${account.title}</h4>
+            </div>
+            <div class="drop-description"><a><i class="fas fa-caret-down"></i></a></div>
         </div>
+            <div class="description-row hidden">
+                <p>${account.description}</p>
+            </div>
         <div class="inc-exp-container">
             <div>
                 <h4>Total</h4>
@@ -61,11 +83,43 @@ function addAccountDOM(account) {
     `
 
     const deleteBtn = item.querySelector('.delete-btn')
+    const editBtn = item.querySelector('.edit-btn')
+    const accountTitle = item.querySelector('.account-title')
+    const accountInput = item.querySelector('.account-input')
+    const accountDescription = item.querySelector('.description-row')
+    const descriptionBtn = item.querySelector('.drop-description')
 
     item.addEventListener('click', (e) =>  {
-        const noRedirect = '.modify-account, .modify-account *';
-        if (!event.target.matches(noRedirect)) {
+        const noRedirect = '.account-input, .account-input *, .modify-account, .modify-account *, .drop-description, .drop-description *';
+        if (!e.target.matches(noRedirect)) {
             document.location.href = `/account?id=${account._id}`
+        }
+    })
+
+    descriptionBtn.addEventListener('click', () => {
+        descriptionBtn.classList.toggle('hidden')
+        accountDescription.classList.toggle('hidden')
+    })
+
+    accountInput.addEventListener('keypress', (e) => {
+        if (e.keyCode === 13) {
+            e.preventDefault()
+            const title = accountInput.querySelector('.input-title').value;
+            const description = accountInput.querySelector('.input-description').value;
+            const newAccount = {
+                title: title,
+                description: description
+            }
+            updateAccount(account._id, newAccount)
+        }        
+    })
+
+    editBtn.addEventListener('click', () => {
+        accountTitle.classList.toggle('edit-hidden')
+        accountInput.classList.toggle('edit-hidden')
+
+        if(!accountInput.classList.contains('edit-hidden')) {
+            accountInput.querySelector('input').focus();
         }
     })
 
@@ -74,7 +128,10 @@ function addAccountDOM(account) {
     })
 
     updateValues(item, account)
-    list.appendChild(item)
+
+    if (!updating) {
+        list.appendChild(item)
+    }
 }
 
 //Update the balance, income, and expense for an account
@@ -125,16 +182,28 @@ async function removeAccount(id) {
     document.getElementById(id).remove()
 }
 
+async function updateAccount(id, newAccount) {
+    const { data } = await axios.put(`/accounts/${id}`, {
+        title: newAccount.title,
+        description: newAccount.description
+    })
+
+    addAccountDOM(data.account, true)
+}
+
+//Return all accounts
 async function getDocuments() {
-    return await axios.get('/accounts')
+    const results = await axios.get('/accounts')
+
+    return results.data.sort((a, b) => a.title.toLowerCase().localeCompare(b.title.toLowerCase()));
 }
 
 async function init() {
     list.innerHTML = '';
-    const { data } = await getDocuments()
+    const data = await getDocuments()
 
     if ( data ) {
-        data.forEach(addAccountDOM)
+        data.forEach(account => addAccountDOM(account))
     }
 }
 

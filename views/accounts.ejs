@@ -9,14 +9,16 @@
     <title>Expense Tracker</title>
 </head>
 <body>
-    <h2>Accounts</h2>
+    <div class="header">
+        <div id="drop-btn" class="drop-btn"><i class="fas fa-chevron-down"></i></div>
+        <h2>Accounts</h2>
+    </div>
 
     <div class="container">
-        <div id="list" class="list"></div>
-
-        <h3>Add new account</h3>
-        <form id="form">
-            <div class="form-control">
+        <div id="add-account-div" class="add-account-div hidden">
+            <h3>Add new account</h3>
+            <form id="form">
+                <div class="form-control">
                 <label for="title">Account name</label>
                 <input type="text" id="title" placeholder="Enter account name...">
             </div>
@@ -26,7 +28,8 @@
             </div>
             <button class="btn">Add account</button>
         </form>
-
+        </div>
+        <div id="list" class="list"></div>
     </div>
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js" integrity="sha512-bZS47S7sPOxkjU/4Bt0zrhEtWx0y0CRkhEp8IckzK+ltifIIE9EMIMTuT/mEzoIMewUINruDBIR/jJnbguonqQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>

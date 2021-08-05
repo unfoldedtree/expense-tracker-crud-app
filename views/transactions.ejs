@@ -10,7 +10,10 @@
     <title>Expense Tracker</title>
 </head>
 <body>
-    <h2>Expense Tracker</h2>
+    <div class="header">
+        <div id="back-btn" class="back-btn"><i class="fas fa-arrow-left"></i></div>
+        <h2 id="account-title">Transactions</h2>
+    </div>
 
     <div class="container">
         <h4>Your Balance</h4>
@@ -28,9 +31,7 @@
         </div>
 
         <h3>History</h3>
-        <ul id="list" class="list">
-            <li class="minus">Cash <span>-$400</span><button class="delete-btn">x</button></li>
-        </ul>
+        <ul id="list" class="list"></ul>
 
         <h3>Add new transaction</h3>
         <form id="form">

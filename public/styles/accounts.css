@@ -20,8 +20,55 @@ body {
 }
 
 .container {
-  margin: 30px auto;
-  width: 350px;
+  margin: 0px auto 30px auto;
+  width: 400px;
+}
+
+.header {
+    width: 400px;
+    margin: 30px auto;
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.header > h2 {
+    margin: 0 auto;
+}
+
+.drop-btn {
+    cursor: pointer;
+    height: 50px;
+    width: 50px;
+    border: none;
+    border-radius: 50%; 
+    background-color: #9c88ff;
+    position: absolute;
+    left: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.3s linear;
+}
+
+.add-account-div {
+    max-height: 300px;
+    transition: all 0.4s linear;
+}
+
+.add-account-div.hidden {
+    overflow: hidden;
+    opacity: 0;
+    max-height: 0;
+}
+
+.drop-btn.hidden {
+    transform: rotate(180deg);
+}
+
+.drop-btn > i {
+    color: #fff;
 }
 
 h1 {
@@ -107,9 +154,15 @@ input[type='text'] {
   width: 100%;
 }
 
+.btn:hover,
+.drop-btn:hover {
+    background-color: #8d76ff;
+}
+
 .btn:focus,
 .delete-btn:focus, 
-.edit-btn:focus {
+.edit-btn:focus,
+.drop-btn:focus {
   outline: 0;
 }
 
@@ -133,8 +186,6 @@ input[type='text'] {
 
 .delete-btn {
     cursor: pointer;
-    /* background-color: #e74c3c; */
-    /* color: #fff; */
     color: #e74c3c;
     font-size: 20px;
     line-height: 20px;
@@ -143,12 +194,77 @@ input[type='text'] {
 
 .edit-btn {
     cursor: pointer;
-    /* background-color: #e74c3c; */
-    /* color: #fff; */
     color: #e74c3c;
     font-size: 20px;
     line-height: 20px;
     padding: 2px 5px;
+}
+
+.account-header {
+    display: flex;
+    justify-content: space-between;
+}
+
+.title-row {
+    display: flex;
+    justify-content: space-between;
+}
+
+.drop-description {
+    cursor: pointer;
+    font-size: 2rem;
+    border: none;
+    border-radius: 50%; 
+    background-color: none;
+    color: #9c88ff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transform: translateY(-25%);
+    transition: transform 0.3s linear;
+}
+
+.drop-description.hidden {
+    transform: rotate(180deg) translateY(25%);
+}
+
+.drop-description:hover {
+    color: rgb(179, 131, 226);
+}
+
+.description-row {
+    max-height: 300px;
+    transition: all 0.1s linear;
+}
+
+.description-row > p {
+    margin: 0;
+}
+
+.description-row.hidden {
+    overflow: hidden;
+    opacity: 0;
+    max-height: 0;
+}
+
+.account-input > input {
+    border: 1px solid #d5d5d5;
+    color: #444;
+    font-size: 1rem;
+    padding: 0.5rem 0.75rem;
+    display: block;
+}
+
+.account-input > input:first-of-type {
+    margin-bottom: 10px;
+}
+
+.account-input > input:focus {
+    outline-color: rgb(179, 131, 226);
+}
+
+.edit-hidden {
+    display: none;
 }
 
 .account-container:hover {

@@ -26,7 +26,7 @@ module.exports = (app) => {
     app.get('/expenses/:expenseId', expenses.findOne);
 
     // Update a Expense with expenseId
-    app.put('/expenses/:expenseId', expenses.update);
+    app.put('/expense/:accountId/:expenseId', expenses.update);
 
     // Delete a Expense with expenseId
     app.delete('/expense/:accountId/:expenseId', expenses.delete);

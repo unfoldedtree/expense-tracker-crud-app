@@ -5,11 +5,17 @@ const list = document.getElementById('list')
 const form = document.getElementById('form')
 const text = document.getElementById('text')
 const amount = document.getElementById('amount')
+const backBtn = document.getElementById('back-btn')
+const account_title = document.getElementById('account-title')
 
 let transactions = [];
 
 const urlParams = new URLSearchParams(window.location.search);
 const account_id = urlParams.get('id')
+
+backBtn.addEventListener('click', () => {
+    document.location.href = '/'
+})
 
 //Add transaction
 async function addTransaction(e) {
@@ -57,6 +63,13 @@ function addTransactionDOM(transaction) {
         removeTransaction(transaction._id)
     })
 
+    item.addEventListener('dblclick', (e) => {
+        const noRedirect = '.delete-btn, .delete-btn *';
+        if (!e.target.matches(noRedirect)) {
+            console.log("DOUBLE CLICKED")
+        }
+    })
+
     transactions.push(transaction)
     list.appendChild(item)
 }
@@ -100,9 +113,17 @@ async function getDocuments() {
     return await axios.get(`/accounts/${account_id}`)
 }
 
+function capitalizeFirstLetters(str){
+    return str.toLowerCase().replace(/^\w|\s\w/g, function (letter) {
+        return letter.toUpperCase();
+    })
+}
+
 async function init() {
     list.innerHTML = '';
     const { data } = await getDocuments()
+
+    account_title.innerHTML = `${capitalizeFirstLetters(data.title)} Transactions`
 
     if ( data.transactions ) {
         data.transactions.forEach(addTransactionDOM)
