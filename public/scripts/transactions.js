@@ -9,7 +9,7 @@ const amount = document.getElementById('amount')
 let transactions = [];
 
 const urlParams = new URLSearchParams(window.location.search);
-const account_id = urlParams.get('account')
+const account_id = urlParams.get('id')
 
 //Add transaction
 async function addTransaction(e) {
@@ -48,7 +48,7 @@ function addTransactionDOM(transaction) {
 
     item.innerHTML = `
         ${transaction.text} <span>${sign}${Math.abs(transaction.amount)}</span>
-        <button class="delete-btn">x</button>
+        <button class="delete-btn"><i class="fas fa-times"></i></button>
     `
 
     const deleteBtn = item.querySelector('.delete-btn')
@@ -88,7 +88,6 @@ function updateValues() {
 //Remove Transaction by ID
 async function removeTransaction(id) {
     const { data } = await axios.delete(`/expense/${account_id}/${id}`)
-    // const { data } = await axios.delete(`/expense/${id}`, { params: { account_id: account_id, id: id } })
 
     document.getElementById(id).remove()
 
@@ -98,7 +97,6 @@ async function removeTransaction(id) {
 }
 
 async function getDocuments() {
-    // return await axios.get('/expenses')
     return await axios.get(`/accounts/${account_id}`)
 }
 

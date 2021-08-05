@@ -65,7 +65,7 @@ function addAccountDOM(account) {
     item.addEventListener('click', (e) =>  {
         const noRedirect = '.modify-account, .modify-account *';
         if (!event.target.matches(noRedirect)) {
-            document.location.href = `/accounttest?account=${account._id}`
+            document.location.href = `/account?id=${account._id}`
         }
     })
 

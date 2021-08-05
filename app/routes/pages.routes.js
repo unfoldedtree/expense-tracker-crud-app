@@ -27,7 +27,7 @@ module.exports = (app) => {
         res.render('accounts.ejs')
     })
 
-    app.get('/accounttest', (req, res) => {
+    app.get('/account', (req, res) => {
         res.render('transactions.ejs')
     //     Account.find()
     //     .then(account => {
