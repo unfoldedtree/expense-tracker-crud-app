@@ -14,7 +14,7 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  min-width: 100vh;
+  /* min-width: 100vw; */
   margin: 0;
   font-family: 'Lato', sans-serif;
 }
@@ -98,7 +98,7 @@ h4 {
 }
 
 .inc-exp-container {
-    margin-top: 20px;
+    /* margin-top: 20px; */
     display: flex;
     justify-content: space-between;
 }
@@ -229,12 +229,17 @@ input[type='text'] {
 }
 
 .drop-description:hover {
-    color: rgb(179, 131, 226);
+    color: #8d76ff;
 }
 
 .description-row {
     max-height: 300px;
+    margin-bottom: 20px;
     transition: all 0.1s linear;
+}
+
+.description-row > p {
+    overflow-wrap: break-word;
 }
 
 .description-row > p {
@@ -242,21 +247,27 @@ input[type='text'] {
 }
 
 .description-row.hidden {
+    margin-bottom: 0;
     overflow: hidden;
     opacity: 0;
     max-height: 0;
 }
 
+.account-input {
+    transition: all 0.1s linear;
+}
+
 .account-input > input {
     border: 1px solid #d5d5d5;
+    margin-bottom: 10px;
     color: #444;
     font-size: 1rem;
     padding: 0.5rem 0.75rem;
     display: block;
 }
 
-.account-input > input:first-of-type {
-    margin-bottom: 10px;
+.account-input > input:nth-of-type(2) {
+    margin-bottom: 20px;
 }
 
 .account-input > input:focus {

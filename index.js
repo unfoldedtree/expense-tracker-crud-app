@@ -25,11 +25,6 @@ mongoose.connect(dbConfig.url, {
     process.exit();
 });
 
-// app.get('/', (req, res) => {
-//     res.json({"message": "Welcome to EasyNotes application. Take notes quickly. Organize and keep track of all your notes."});
-// });
-
-// require('./app/routes/quotes.routes.js')(app);
 require('./app/routes/pages.routes.js')(app);
 
 

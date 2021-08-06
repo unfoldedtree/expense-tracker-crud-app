@@ -89,7 +89,7 @@ function addAccountDOM(account, updating = false) {
     const accountDescription = item.querySelector('.description-row')
     const descriptionBtn = item.querySelector('.drop-description')
 
-    item.addEventListener('click', (e) =>  {
+    item.addEventListener('dblclick', (e) =>  {
         const noRedirect = '.account-input, .account-input *, .modify-account, .modify-account *, .drop-description, .drop-description *';
         if (!e.target.matches(noRedirect)) {
             document.location.href = `/account?id=${account._id}`
@@ -99,6 +99,10 @@ function addAccountDOM(account, updating = false) {
     descriptionBtn.addEventListener('click', () => {
         descriptionBtn.classList.toggle('hidden')
         accountDescription.classList.toggle('hidden')
+
+        //Remove Edit Fields if you toggle description
+        accountTitle.classList.remove('edit-hidden')
+        accountInput.classList.add('edit-hidden')
     })
 
     accountInput.addEventListener('keypress', (e) => {
@@ -115,6 +119,10 @@ function addAccountDOM(account, updating = false) {
     })
 
     editBtn.addEventListener('click', () => {
+        //Remove description from view if edit is toggled
+        descriptionBtn.classList.remove('hidden')
+        accountDescription.classList.add('hidden')
+
         accountTitle.classList.toggle('edit-hidden')
         accountInput.classList.toggle('edit-hidden')
 

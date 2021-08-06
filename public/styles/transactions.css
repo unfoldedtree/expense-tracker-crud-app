@@ -14,7 +14,7 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  min-width: 100vh;
+  /* min-width: 100vw; */
   margin: 0;
   font-family: 'Lato', sans-serif;
 }
@@ -61,12 +61,6 @@ h1 {
   margin: 0;
 }
 
-h3 {
-  border-bottom: 1px solid #bbb;
-  padding-bottom: 10px;
-  margin: 40px 0 10px;
-}
-
 h4 {
   margin: 0;
   text-transform: uppercase;
@@ -102,6 +96,61 @@ h4 {
 
 .money.minus {
   color: #c0392b;
+}
+
+/* .history-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #bbb;
+    padding-bottom: 10px;
+    margin: 40px 0 10px;
+} */
+
+.history-header {
+    display: flex;
+    align-items: center;
+    position: relative;
+}
+
+.history-header > h3 {
+    width: 100%;
+    border-bottom: 1px solid #bbb;
+    padding-bottom: 10px;
+    margin: 40px 0 10px;
+}
+
+.history-header > a {
+    position: absolute;
+    right: 2px;
+    transform: translateY(50%);
+}
+
+.add-drop-btn {
+    color: #9c88ff;
+    cursor: pointer;
+    font-size: 25px;
+    transition: transform 0.1s ease;
+}
+
+.add-drop-btn:hover {
+    color: #8d76ff;
+}
+
+.add-drop-btn.add {
+    transform: rotate(45deg);
+}
+
+.add-new-label.hide,
+.history-label.hide,
+.add-new.hide {
+    display: none;
+}
+
+.add-new > h3 {
+  border-bottom: 1px solid #bbb;
+  padding-bottom: 10px;
+  margin: 40px 0 10px;
 }
 
 label {
@@ -154,6 +203,7 @@ input[type='number'] {
   color: #333;
   display: flex;
   justify-content: space-between;
+  flex-direction: column;
   position: relative;
   padding: 10px;
   margin: 10px 0;
@@ -167,6 +217,40 @@ input[type='number'] {
   border-right: 5px solid #c0392b;
 }
 
+.transaction-info {
+    display: flex;
+    justify-content: space-between;
+}
+
+.transaction-input {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.transaction-input > input {
+    width: 35%;
+    border: 1px solid #d5d5d5;
+    color: #444;
+    font-size: 1rem;
+    padding: 0.5rem 0.75rem;
+    display: block;
+}
+
+.transaction-input > input:focus,
+#text:focus,
+#amount:focus {
+    outline-color: rgb(179, 131, 226);
+}
+
+.transaction-input > input:first-of-type {
+    width: 40%;
+}
+
+.edit-hidden {
+    display: none;
+}
+
 .delete-btn {
   cursor: pointer;
   background-color: #e74c3c;
@@ -177,7 +261,8 @@ input[type='number'] {
   padding: 2px 5px;
   position: absolute;
   top: 50%;
-  left: 0;
+  /* left: 0; */
+  left: -5px;
   transform: translate(-100%, -50%);
   opacity: 0;
   transition: opacity 0.3s ease;

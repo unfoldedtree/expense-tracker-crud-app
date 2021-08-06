@@ -79,33 +79,63 @@ exports.update = (req, res) => {
     //     });
     // }
 
-    // Find note and update it with the request body
-    Expense.findByIdAndUpdate(req.params.expenseId, {
-        text: req.body.text,
-        amount: req.body.amount
-    }, {new: true})
-    .then(expense => {
-        if(!expense) {
-            return res.status(404).send({
-                message: "Expense not found with id " + req.params.expenseId
-            });
-        }
-        // res.send(note);
-        const data = {
-            expense: expense,
-            message: "Updated expense successfully!"
-        }
-        res.send(data);
-    }).catch(err => {
-        if(err.kind === 'ObjectId') {
-            return res.status(404).send({
-                message: "Expense not found with id " + req.params.expenseId
-            });                
-        }
-        return res.status(500).send({
-            message: "Error updating expense with id " + req.params.expenseId
-        });
-    });
+    // Find account and update an expense with the request body
+    Account.findById(req.body.account_id)
+        .then(account => {
+            // Creat a new expense
+            // const expense = new Expense ({
+            //     text: req.body.text,
+            //     amount: req.body.amount
+            // })
+
+            let expense = account.transactions.id(req.params.expenseId);
+            expense.text = req.body.text;
+            expense.amount = req.body.amount;
+            // expense.save()
+            account.save()
+                .then(account => {
+                    const data = ({
+                        expense: expense,
+                        message: "Expense updated successfully!"
+                    })
+                    res.send(data)
+                })
+                .catch(err => {
+                    res.status(500).send({
+                        message: err.message || "Some error occurred while updating the expense."
+                    })
+                })
+        }).catch(err => {
+            res.status(500).send({
+                message: err.message || "Some error occurred while updating the expense."
+            })
+        })
+    // Expense.findByIdAndUpdate(req.params.expenseId, {
+    //     text: req.body.text,
+    //     amount: req.body.amount
+    // }, {new: true})
+    // .then(expense => {
+    //     if(!expense) {
+    //         return res.status(404).send({
+    //             message: "Expense not found with id " + req.params.expenseId
+    //         });
+    //     }
+    //     // res.send(note);
+    //     const data = {
+    //         expense: expense,
+    //         message: "Updated expense successfully!"
+    //     }
+    //     res.send(data);
+    // }).catch(err => {
+    //     if(err.kind === 'ObjectId') {
+    //         return res.status(404).send({
+    //             message: "Expense not found with id " + req.params.expenseId
+    //         });                
+    //     }
+    //     return res.status(500).send({
+    //         message: "Error updating expense with id " + req.params.expenseId
+    //     });
+    // });
 };
 
 // Delete a expense with the specified expenseId in the request
