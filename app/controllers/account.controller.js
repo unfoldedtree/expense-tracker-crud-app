@@ -1,13 +1,8 @@
 const Account = require('../models/account.model.js');
+const UserAccount = require("../models/user-account.model.js");
 
 // Create and Save a new account
 exports.create = (req, res) => {
-    // Validate request
-    // if(!req.body.content) {
-    //     return res.status(400).send({
-    //         message: "Note content can not be empty"
-    //     });
-    // }
 
     // Create a account
     const account = new Account({
@@ -16,31 +11,41 @@ exports.create = (req, res) => {
     });
 
     // Save account in the database
-    account.save()
-    .then(account => {
-        const data = {
-            account: account,
-            message: "Created account successfully!"
-        }
+    UserAccount.findOne({ userId: { $eq: req.user._id } })
+    .then(userAccount => {
+        userAccount.accounts.push(account)
+        userAccount.save()
+        .then(new_account => {
+            const data = {
+                account: account,
+                message: "Created account successfully!"
+            }
         res.send(data);
-        // res.redirect('/')
-    }).catch(err => {
+        }).catch(err => {
+            res.status(500).send({
+                message: err.message || "Some error occurred while creating the account."
+        });
+        })
+    })
+    .catch(err => {
+        console.log(err)
         res.status(500).send({
-            message: err.message || "Some error occurred while creating the account."
+            message: err.message || "Some error occurred while retrieving user accounts."
         });
     });
 };
 
 // Retrieve and return all accounts from the database.
 exports.findAll = (req, res) => {
-    Account.find()
-    .then(accounts => {
-        res.send(accounts);
-    }).catch(err => {
-        res.status(500).send({
-            message: err.message || "Some error occurred while retrieving accounts."
+
+    UserAccount.findOne({ userId: { $eq: req.user._id } })
+        .then(userAccount => res.send(userAccount.accounts))
+        .catch(err => {
+            console.log(err)
+            res.status(500).send({
+                message: err.message || "Some error occurred while retrieving user accounts."
+            });
         });
-    });
 };
 
 // Find a single account with a accountId
@@ -67,12 +72,6 @@ exports.findOne = (req, res) => {
 
 // Update a account identified by the accountId in the request
 exports.update = (req, res) => {
-    // Validate Request
-    // if(!req.body.content) {
-    //     return res.status(400).send({
-    //         message: "Note content can not be empty"
-    //     });
-    // }
 
     // Find account and update it with the request body
     Account.findByIdAndUpdate(req.params.accountId, {
@@ -105,22 +104,51 @@ exports.update = (req, res) => {
 
 // Delete a account with the specified accountId in the request
 exports.delete = (req, res) => {
-    Account.findByIdAndRemove(req.params.accountId)
-    .then(account => {
+
+    UserAccount.findOne({ userId: { $eq: req.user._id } })
+    .then(userAccount => {
+        userAccount.transactions.remove(req.params.accountId)
+        userAccount.save()
+        .then(account => {
         if(!account) {
             return res.status(404).send({
                 message: "Account not found with id " + req.params.accountId
             });
         }
         res.send({message: "Account deleted successfully!"});
-    }).catch(err => {
-        if(err.kind === 'ObjectId' || err.name === 'NotFound') {
-            return res.status(404).send({
-                message: "Account not found with id " + req.params.accountId
-            });                
-        }
-        return res.status(500).send({
-            message: "Could not delete account with id " + req.params.accountId
+        }).catch(err => {
+            if(err.kind === 'ObjectId' || err.name === 'NotFound') {
+                return res.status(404).send({
+                    message: "Account not found with id " + req.params.accountId
+                });                
+            }
+            return res.status(500).send({
+                message: "Could not delete account with id " + req.params.accountId
+            });
         });
-    });
+    })
+    .catch(err => {
+        return res.status(500).send({
+            message: "Could not find user account with id " + req.user._id
+        });
+    })
+
+    // Account.findByIdAndRemove(req.params.accountId)
+    // .then(account => {
+    //     if(!account) {
+    //         return res.status(404).send({
+    //             message: "Account not found with id " + req.params.accountId
+    //         });
+    //     }
+    //     res.send({message: "Account deleted successfully!"});
+    // }).catch(err => {
+    //     if(err.kind === 'ObjectId' || err.name === 'NotFound') {
+    //         return res.status(404).send({
+    //             message: "Account not found with id " + req.params.accountId
+    //         });                
+    //     }
+    //     return res.status(500).send({
+    //         message: "Could not delete account with id " + req.params.accountId
+    //     });
+    // });
 };
