@@ -44,7 +44,8 @@ module.exports = (app) => {
                             new UserAccount({
                                 userId: currentUser._id
                             }).save().then((newAccount) => {
-                                return currentUser;
+                                // return currentUser;
+                                done(null, currentUser)
                             })
                         }
                     });
@@ -52,6 +53,8 @@ module.exports = (app) => {
                     //if not, create a new user 
                     new User({
                     googleId: profile.id,
+                    email: profile._json.email,
+                    name: profile.name
                     }).save().then((newUser) =>{
                         // done(null, newUser);
                         UserAccount.findOne({userId: newUser._id}).then((currentAccount) => {
@@ -61,7 +64,8 @@ module.exports = (app) => {
                                 new UserAccount({
                                         userId: newUser._id
                                 }).save().then((newAccount) => {
-                                    return newUser;
+                                    // return newUser;
+                                    done(null, currentUser)
                                 })
                             }
                         });

@@ -81,36 +81,63 @@ exports.update = (req, res) => {
     // }
 
     // Find account and update an expense with the request body
-    Account.findById(req.body.account_id)
-        .then(account => {
-            // Creat a new expense
-            // const expense = new Expense ({
-            //     text: req.body.text,
-            //     amount: req.body.amount
-            // })
+    // Account.findById(req.body.account_id)
 
-            let expense = account.transactions.id(req.params.expenseId);
+    UserAccount.findOne({ userId: { $eq: req.user._id } })
+        .then(userAccount => {
+            const account = userAccount.accounts.id(req.body.account_id)
+            let expense = account.transactions.id(req.params.expenseId)
             expense.text = req.body.text;
             expense.amount = req.body.amount;
-            // expense.save()
-            account.save()
-                .then(account => {
-                    const data = ({
-                        expense: expense,
-                        message: "Expense updated successfully!"
-                    })
-                    res.send(data)
+            userAccount.save()
+            .then(userAccount => {
+                const data = ({
+                    expense: expense,
+                    message: "Expense updated successfully!"
                 })
-                .catch(err => {
-                    res.status(500).send({
-                        message: err.message || "Some error occurred while updating the expense."
-                    })
+                res.send(data)
+            })
+            .catch(err => {
+                res.status(500).send({
+                    message: err.message || "Some error occurred while updating the expense."
                 })
-        }).catch(err => {
-            res.status(500).send({
-                message: err.message || "Some error occurred while updating the expense."
             })
         })
+        .catch(err => {
+            res.status(500).send({
+                message: err.message || "Some error occurred while updating the user account"
+            })
+        })
+
+        // .then(account => {
+        //     // Creat a new expense
+        //     // const expense = new Expense ({
+        //     //     text: req.body.text,
+        //     //     amount: req.body.amount
+        //     // })
+
+        //     let expense = account.transactions.id(req.params.expenseId);
+        //     expense.text = req.body.text;
+        //     expense.amount = req.body.amount;
+        //     // expense.save()
+        //     account.save()
+        //         .then(account => {
+        //             const data = ({
+        //                 expense: expense,
+        //                 message: "Expense updated successfully!"
+        //             })
+        //             res.send(data)
+        //         })
+        //         .catch(err => {
+        //             res.status(500).send({
+        //                 message: err.message || "Some error occurred while updating the expense."
+        //             })
+        //         })
+        // }).catch(err => {
+        //     res.status(500).send({
+        //         message: err.message || "Some error occurred while updating the expense."
+        //     })
+        // })
     // Expense.findByIdAndUpdate(req.params.expenseId, {
     //     text: req.body.text,
     //     amount: req.body.amount
