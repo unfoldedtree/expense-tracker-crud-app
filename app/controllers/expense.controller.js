@@ -1,11 +1,14 @@
 const Expense = require('../models/expense.model.js');
 const Account = require('../models/account.model.js');
+const UserAccount = require("../models/user-account.model.js");
 
 // Create and Save a new Expense
 exports.create = (req, res) => {
 
-    Account.findById(req.body.account_id)
-        .then(account => {
+    UserAccount.findOne({ userId: { $eq: req.user._id } })
+    .then(userAccount => {
+        const account = userAccount.accounts.id(req.body.account_id)
+
             // Create a expense
             const expense = new Expense({
                 text: req.body.text || "No Description",
@@ -13,27 +16,25 @@ exports.create = (req, res) => {
             });
 
             account.transactions.push(expense)
-
-            // expense.save()
-            account.save()
+            userAccount.save()
             .then(account => {
             const data = {
                 expense: expense,
                 message: "Created expense successfully!"
             }
             res.send(data);
-            // res.redirect('/')
-            }).catch(err => {
-                res.status(500).send({
+            })
+            .catch(err => {
+                res.statusStatus(500).send({
                 message: err.message || "Some error occurred while creating the expense."
             });
         });
+    })
+    .catch(err => {
+        res.sendStatus(500).send({
+            message: err.message || "Some error occurred while finding that user."
         })
-        .catch(err => {
-            res.status(500).send({
-            message: err.message || "Some error occurred while creating the expense."
-        });
-        });
+    });
 };
 
 // Retrieve and return all expenses from the database.
@@ -141,28 +142,59 @@ exports.update = (req, res) => {
 // Delete a expense with the specified expenseId in the request
 exports.delete = (req, res) => {
 
-    Account.findById(req.params.accountId)
-        .then(account => {
-            account.transactions.remove(req.params.expenseId)
-            account.save()
-                .then(expense => {
-                    if(!expense) {
-                        return res.status(404).send({
-                            message: "Expense not found with id " + req.params.expenseId
-                        });
-                    }
-                    res.send({message: "Expense deleted successfully!"});
-                }).catch(err => {
-                    if(err.kind === 'ObjectId' || err.name === 'NotFound') {
-                        return res.status(404).send({
-                        message: "Expense not found with id " + req.params.expenseId
-                    });                
-                    }
-                    return res.status(500).send({
-                        message: "Could not delete expense with id " + req.params.expenseId
-                    })
-                })
+    UserAccount.findOne({ userId: { $eq: req.user._id } })
+    .then(userAccount => {
+        const account = userAccount.accounts.id(req.params.accountId)
+        account.transactions.remove(req.params.expenseId)
+        userAccount.save()
+        .then(userAccount => {
+            // if(!expense) {
+            //     return res.status(404).send({
+            //         message: "Expense not found with id " + req.params.expenseId
+            //     });
+            // }
+            res.send({message: "Expense deleted successfully!"});
         })
+        .catch(err => {
+            if(err.kind === 'ObjectId' || err.name === 'NotFound') {
+                return res.status(404).send({
+                    message: "Expense not found with id " + req.params.expenseId
+            });                
+            }
+            return res.status(500).send({
+                message: "Could not delete expense with id " + req.params.expenseId
+            })
+        })
+    })
+    .catch(err => {
+        return res.status(500).send({
+            message: err.message || "Some error occurred while finding that user."
+        })
+    });
+
+
+    // Account.findById(req.params.accountId)
+    //     .then(account => {
+    //         account.transactions.remove(req.params.expenseId)
+    //         account.save()
+    //             .then(expense => {
+    //                 if(!expense) {
+    //                     return res.status(404).send({
+    //                         message: "Expense not found with id " + req.params.expenseId
+    //                     });
+    //                 }
+    //                 res.send({message: "Expense deleted successfully!"});
+    //             }).catch(err => {
+    //                 if(err.kind === 'ObjectId' || err.name === 'NotFound') {
+    //                     return res.status(404).send({
+    //                     message: "Expense not found with id " + req.params.expenseId
+    //                 });                
+    //                 }
+    //                 return res.status(500).send({
+    //                     message: "Could not delete expense with id " + req.params.expenseId
+    //                 })
+    //             })
+    //     })
 
     // Expense.findByIdAndRemove(req.params.expenseId)
     // .then(expense => {
