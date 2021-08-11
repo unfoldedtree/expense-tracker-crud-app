@@ -87,7 +87,8 @@ module.exports = (app) => {
     });
 
     app.get("/login", (req, res) => {
-        res.redirect("/auth/google")
+        // res.redirect("/auth/google")
+        res.render('login.ejs')
     })
 
     app.get("/auth/google", passport.authenticate("google", {
@@ -96,6 +97,7 @@ module.exports = (app) => {
 
     app.get("/auth/logout", (req, res) => {
         req.logout();
-        res.send(req.user);
+        res.redirect("/login")
+        // res.send(req.user);
     });
 }
